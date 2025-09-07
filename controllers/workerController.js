@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const db = require('../config/db');
+const workerService = require('../services/workerService');
 
 // Add Worker Controller
 const addWorker = (req, res) => {
@@ -98,4 +99,25 @@ const addWorker = (req, res) => {
   });
 };
 
-module.exports = { addWorker };
+const fetchWorker = (req,res) => {
+  const {email} = req.query;
+
+  workerService.fetchWorker(email,(err,result) => {
+    if(err){
+      console.error('Error fetch worker:', err);
+      return res.status(500).json({
+        status: 'error',
+        message: 'Failed to fetch worker data.'
+      });
+    }
+    if(result.status == 'error'){
+      const statusCode = result.message == 'worker not found.'? 404:400;
+      return res.status(statusCode).json(result);
+    }
+    return res.status(200).json(result);
+  })
+}
+
+module.exports = { addWorker,fetchWorker };
+
+

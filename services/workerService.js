@@ -36,4 +36,31 @@ const signInWorker = (Email, Password, callback) => {
   });
 };
 
-module.exports = { signInWorker };
+const fetchWorker = (email,callback) => {
+    if(!email) {
+        return callback(null, {
+            status: 'error',
+            message: 'Email is required to fetch worker data.'
+        });
+    }
+    workerModel.findByEmail(email, (err, result) => {
+        if(err){
+            return callback(err, null);
+        }
+
+        if(result.length === 0) {
+            return callback(null, {
+                status: 'error',
+                message: 'worker not found.'
+            });
+        }
+        return callback(null, {
+            status: 'success',
+            data: result[0],
+        });
+
+    });
+};
+
+
+module.exports = { signInWorker,fetchWorker };

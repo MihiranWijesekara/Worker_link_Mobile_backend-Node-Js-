@@ -8,4 +8,13 @@ const findByEmailAndPassword = (email, password, callback) => {
   });
 };
 
-module.exports = { findByEmailAndPassword };
+
+const findByEmail = (email, callback) => {
+  const sql = 'SELECT * FROM worker_account WHERE Email = ?';
+  db.query(sql,[email], (err, result ) => {
+    if (err) return callback(err, null);
+    callback(null, result);
+  });
+};
+
+module.exports = { findByEmailAndPassword, findByEmail };
